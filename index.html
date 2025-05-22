@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gullkorn</title>
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- PWA-manifest -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#4a6fa5">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <style>
+    header h1 {
+      font-size: 2.5rem;
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+    header p.subtitle {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    .child-buttons {
+      margin-bottom: 1.5rem;
+    }
+    .menu-toggle {
+      background: none;
+      border: none;
+      font-size: 1.75rem;
+      cursor: pointer;
+      color: #4a6fa5;
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      z-index: 1002;
+      user-select: none;
+    }
+  </style>
+</head>
+<body>
+  <span class="menu-toggle"
+        onclick="toggleMenu()"
+        role="button"
+        tabindex="0"
+        aria-label="Åpne meny">☰</span>
+
+  <nav class="mobile-menu" id="mobilMeny">
+    <h2>Meny</h2>
+    <button class="menu-button" onclick="visLeggTilSkjema()">+ Legg til barn</button>
+    <button class="menu-button" onclick="visRedigerSkjema()">✎ Rediger barn</button>
+  </nav>
+
+  <!-- Skjema for legg til / rediger barn, startet skjult -->
+  <div id="popupSkjema"
+       class="overlay"
+       style="display: none; align-items: center; justify-content: center;">
+    <div class="card">
+      <h2 id="skjemaTittel">Legg til barn</h2>
+      <label for="barnNavn">Navn</label>
+      <input type="text" id="barnNavn" />
+      <label for="barnFødt">Fødselsdato</label>
+      <input type="date" id="barnFødt" />
+      <label for="barnKjønn">Kjønn</label>
+      <select id="barnKjønn">
+        <option value="">Velg</option>
+        <option value="jente">Jente</option>
+        <option value="gutt">Gutt</option>
+        <option value="annet">Annet</option>
+      </select>
+      <div class="card-buttons">
+        <button id="lagreKnapp" onclick="lagreBarn()">Lagre</button>
+        <button onclick="lukkSkjema()">Avbryt</button>
+        <button id="slettKnapp" onclick="slettBarn()" style="display:none;">Slett</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Popup for valg av barn ved redigering, startet skjult -->
+  <div id="velgRedigerBarn"
+       class="overlay"
+       style="display: none; align-items: center; justify-content: center;">
+    <div class="card">
+      <h2>Hvilket barn vil du redigere?</h2>
+      <div id="velgRedigerKnapper" class="filter-knapper"></div>
+      <button class="tilbake-knapp" onclick="lukkRedigerPopup()">Avbryt</button>
+    </div>
+  </div>
+
+  <div class="app-container">
+    <header>
+      <h1>Gullkorn</h1>
+      <p class="subtitle">Forevige de små øyeblikkene – én replikk om gangen.</p>
+    </header>
+
+    <main>
+      <div id="childButtons" class="child-buttons"></div>
+      <a href="mine-gullkorn.html"
+         class="view-all"
+         style="background-color:#d4af37;
+                color:white;
+                font-weight:bold;
+                margin-top:1.5rem;">
+        Se gullkorn
+      </a>
+    </main>
+
+    <footer class="bottom-footer">
+      Alt lagres lokalt på din enhet. Ingen data deles.
+    </footer>
+  </div>
+
+  <script>
+    // Registrer service worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js')
+        .then(() => console.log('Service Worker registrert'))
+        .catch(err => console.error('Service Worker-feil:', err));
+    }
+
+    let redigerer = false;
+    let redigerBarnNavn = null;
+    const mobilMeny    = document.getElementById('mobilMeny');
+    const popup        = document.getElementById('popupSkjema');
+    const skjemaTittel = document.getElementById('skjemaTittel');
+    const slettKnapp   = document.getElementById('slettKnapp');
+
+    function toggleMenu() {
+      mobilMeny.classList.toggle('open');
+    }
+
+    function visLeggTilSkjema() {
+      redigerer = false;
+      skjemaTittel.textContent = 'Legg til barn';
+      document.getElementById('barnNavn').value = '';
+      document.getElementById('barnFødt').value = '';
+      document.getElementById('barnKjønn').value = '';
+      slettKnapp.style.display = 'none';
+      popup.style.display = 'flex';
+      toggleMenu();
+    }
+    function visRedigerSkjema() {
+      let barnListe = JSON.parse(localStorage.getItem("barn")||"[]")
+        .sort((a,b)=>new Date(a.birth)-new Date(b.birth));
+      const container = document.getElementById("velgRedigerKnapper");
+      container.innerHTML = "";
+      if (!barnListe.length) {
+        alert("Ingen barn registrert ennå.");
+        return;
+      }
+      barnListe.forEach(b => {
+        const knapp = document.createElement("button");
+        knapp.textContent = b.name;
+        knapp.style.backgroundColor = b.color;
+        knapp.style.color = "#000";
+        knapp.onclick = ()=>redigerValgtBarn(b.name);
+        container.appendChild(knapp);
+      });
+      document.getElementById("velgRedigerBarn").style.display = "flex";
+      toggleMenu();
+    }
+    function lukkRedigerPopup() {
+      document.getElementById("velgRedigerBarn").style.display = "none";
+    }
+    function redigerValgtBarn(navn) {
+      const barnListe = JSON.parse(localStorage.getItem("barn") || "[]");
+      const valgt = barnListe.find(b=>b.name===navn);
+      redigerer = true;
+      redigerBarnNavn = valgt.name;
+      skjemaTittel.textContent = 'Rediger barn';
+      document.getElementById('barnNavn').value = valgt.name;
+      document.getElementById('barnFødt').value = valgt.birth;
+      document.getElementById('barnKjønn').value = valgt.gender;
+      slettKnapp.style.display = 'inline-block';
+      popup.style.display = 'flex';
+      lukkRedigerPopup();
+    }
+    function lukkSkjema() {
+      popup.style.display = 'none';
+    }
+    function lagreBarn() {
+      const navn  = document.getElementById('barnNavn').value.trim();
+      const født  = document.getElementById('barnFødt').value;
+      const kjønn = document.getElementById('barnKjønn').value;
+      if (!navn||!født||!kjønn) { alert("Fyll ut alle felt"); return; }
+      const farge = kjønn==="jente"? "#fde6ee"
+                  : kjønn==="gutt"?  "#e3f0fb"
+                  : "#eeeeee";
+      let barnListe = JSON.parse(localStorage.getItem("barn")||"[]");
+      if (redigerer) {
+        const idx = barnListe.findIndex(b=>b.name===redigerBarnNavn);
+        barnListe[idx] = { name:navn, birth:født, gender:kjønn, color:farge };
+      } else {
+        barnListe.push({ name:navn, birth:født, gender:kjønn, color:farge });
+      }
+      localStorage.setItem("barn",JSON.stringify(barnListe));
+      lukkSkjema();
+      visBarn();
+    }
+    function slettBarn() {
+      let barnListe = JSON.parse(localStorage.getItem("barn")||"[]")
+        .filter(b=>b.name!==redigerBarnNavn);
+      localStorage.setItem("barn",JSON.stringify(barnListe));
+      lukkSkjema();
+      visBarn();
+    }
+    function visBarn() {
+      const container = document.getElementById("childButtons");
+      container.innerHTML = "";
+      JSON.parse(localStorage.getItem("barn")||"[]")
+        .sort((a,b)=>new Date(a.birth)-new Date(b.birth))
+        .forEach(b=>{
+          const btn = document.createElement("button");
+          btn.textContent = b.name;
+          btn.style.backgroundColor = b.color;
+          btn.style.color = "#000";
+          btn.onclick = ()=>window.location.href=
+            `registrer.html?barn=${encodeURIComponent(b.name)}`;
+          container.appendChild(btn);
+        });
+    }
+    visBarn();
+  </script>
+</body>
+</html>

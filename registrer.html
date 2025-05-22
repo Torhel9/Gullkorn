@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registrer gullkorn</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      transition: background-color 0.3s ease;
+    }
+    .container {
+      max-width: 480px;
+      margin: auto;
+      padding: 1rem;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+    textarea {
+      width: 100%;
+      height: 120px;
+      padding: 0.75rem;
+      border-radius: 12px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+      resize: none;
+    }
+    .submit-btn {
+      margin-top: 1rem;
+      width: 100%;
+      padding: 1rem;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+    .submit-btn:active {
+      transform: scale(0.98);
+    }
+    /* Oppdatert tilbake-knapp */
+    .tilbake-knapp {
+      display: block;
+      margin: 0.75rem auto;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 12px;
+      background-color: #4a6fa5;
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 600;
+      text-align: center;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: background 0.2s, transform 0.1s;
+      text-decoration: none;
+    }
+    .tilbake-knapp:hover {
+      background-color: #3a5d8c;
+      transform: scale(1.02);
+    }
+    .tilbake-knapp:active {
+      transform: scale(0.98);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1 id="overskrift"></h1>
+    </header>
+    <main>
+      <textarea id="gullkornTekst" placeholder="Skriv gullkornet her..."></textarea>
+      <button class="submit-btn" onclick="lagreGullkorn()">Lagre gullkorn</button>
+      <button class="tilbake-knapp" onclick="history.back()">← Tilbake</button>
+    </main>
+  </div>
+
+  <script>
+    // Hent barnet fra URL og storage
+    const urlParams = new URLSearchParams(window.location.search);
+    const barnNavn = urlParams.get('barn');
+    document.getElementById('overskrift').textContent = `Registrer gullkorn for ${barnNavn}`;
+
+    const barnListe = JSON.parse(localStorage.getItem("barn") || "[]");
+    const valgtBarn = barnListe.find(b => b.name === barnNavn) || { gender: 'annet', color: '#eeeeee' };
+
+    // Definer farger basert på kjønn
+    const farger = {
+      gutt:  '#e3f0fb',
+      jente: '#fde6ee',
+      annet: '#eeeeee'
+    };
+    const temaFarge = farger[valgtBarn.gender] || farger.annet;
+
+    // Påfør tema
+    document.body.style.backgroundColor = temaFarge;
+    const submitBtn = document.querySelector('.submit-btn');
+    submitBtn.style.backgroundColor = temaFarge;
+    submitBtn.style.color = '#000';
+
+    function lagreGullkorn() {
+      const tekst = document.getElementById("gullkornTekst").value.trim();
+      if (!tekst) {
+        alert("Du må skrive noe!");
+        return;
+      }
+      const lagrede = JSON.parse(localStorage.getItem("gullkorn") || "[]");
+      const dato = new Date().toISOString().slice(0, 10);
+      // Beregn alder
+      const fodselsdato = new Date(valgtBarn.birth);
+      const nå = new Date();
+      let år = nå.getFullYear() - fodselsdato.getFullYear();
+      let mnd = nå.getMonth() - fodselsdato.getMonth();
+      if (mnd < 0) { år--; mnd += 12; }
+      const alder = `${år} år og ${mnd} måned${mnd === 1 ? '' : 'er'}`;
+
+      lagrede.push({ barn: barnNavn, tekst, dato, alder });
+      localStorage.setItem("gullkorn", JSON.stringify(lagrede));
+      document.getElementById("gullkornTekst").value = "";
+      alert("Gullkorn lagret!");
+    }
+  </script>
+</body>
+</html>

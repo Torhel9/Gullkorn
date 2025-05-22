@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mine gullkorn</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-container">
+    <header>
+      <h1>Mine gullkorn</h1>
+    </header>
+
+    <!-- Filter-popup -->
+    <div id="filterKort"
+         class="overlay"
+         style="display:none; align-items: center; justify-content: center;">
+      <div class="card">
+        <h2>Velg barn</h2>
+        <div id="filterKnapper" class="filter-knapper"></div>
+        <button class="tilbake-knapp" onclick="hideFilter()">Avbryt</button>
+      </div>
+    </div>
+
+    <main>
+      <input id="sokeFelt"
+             type="text"
+             placeholder="Søk i gullkorn..."
+             style="width:100%; padding:0.75rem; margin-top:1rem;
+                    border-radius:12px; border:1px solid #ccc; font-size:1rem;" />
+
+      <button id="exportPdfBtn"
+              class="view-all"
+              style="margin:1rem 0; background-color:#d4af37; color:white; font-weight:bold;">
+        📄 Eksporter til PDF
+      </button>
+
+      <div id="gullkornListe" class="quote-list"></div>
+    </main>
+
+    <footer class="bottom-footer">
+      <button onclick="history.back()" class="tilbake-knapp">← Tilbake</button>
+    </footer>
+  </div>
+
+  <!-- Rediger-modal -->
+  <div id="redigerModal"
+       class="overlay"
+       style="display:none; align-items: center; justify-content: center;">
+    <div class="card">
+      <h2>Rediger gullkorn</h2>
+      <textarea id="redigerTekst"
+                rows="5"
+                style="width:100%; padding:0.5rem;"></textarea>
+      <div class="card-buttons">
+        <button onclick="lagreEndring()">Lagre</button>
+        <button onclick="lukkRedigerModal()">Avbryt</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- html2canvas for bildegenerering -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="mine-gullkorn.js"></script>
+</body>
+</html>
