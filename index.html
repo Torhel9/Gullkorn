@@ -4,12 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gullkorn</title>
+
   <link rel="stylesheet" href="styles.css" />
 
   <!-- PWA-manifest -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#4a6fa5">
+
+  <!-- Icons -->
+  <link rel="icon" href="icons/icon-192.png" sizes="192x192" type="image/png">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+
+  <!-- iOS support -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
@@ -40,20 +46,6 @@
     }
   </style>
 </head>
-  <head>
-  <!-- … dine andre tags … -->
-  <link rel="icon"
-        href="icons/icon-192.png"
-        sizes="192x192"
-        type="image/png">
-
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#4a6fa5">
-
-  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-</head>
 <body>
   <span class="menu-toggle"
         onclick="toggleMenu()"
@@ -67,7 +59,6 @@
     <button class="menu-button" onclick="visRedigerSkjema()">✎ Rediger barn</button>
   </nav>
 
-  <!-- Skjema for legg til / rediger barn, startet skjult -->
   <div id="popupSkjema"
        class="overlay"
        style="display: none; align-items: center; justify-content: center;">
@@ -92,7 +83,6 @@
     </div>
   </div>
 
-  <!-- Popup for valg av barn ved redigering, startet skjult -->
   <div id="velgRedigerBarn"
        class="overlay"
        style="display: none; align-items: center; justify-content: center;">
@@ -113,10 +103,7 @@
       <div id="childButtons" class="child-buttons"></div>
       <a href="mine-gullkorn.html"
          class="view-all"
-         style="background-color:#d4af37;
-                color:white;
-                font-weight:bold;
-                margin-top:1.5rem;">
+         style="background-color:#d4af37; color:white; font-weight:bold; margin-top:1.5rem;">
         Se gullkorn
       </a>
     </main>
@@ -129,7 +116,7 @@
   <script>
     // Registrer service worker
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js')
+      navigator.serviceWorker.register('sw.js')
         .then(() => console.log('Service Worker registrert'))
         .catch(err => console.error('Service Worker-feil:', err));
     }
