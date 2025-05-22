@@ -260,3 +260,141 @@ input[type="button"]:active,
 .card-buttons button {
   flex: 1;
 }
+
+/* ───────────── Mobil-først ───────────── */
+html {
+  font-size: 16px;           /* god basis for rem */
+  box-sizing: border-box;
+}
+*, *::before, *::after { box-sizing: inherit; }
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  background: #fdfcfb;
+  color: #333;
+  line-height: 1.4;
+}
+
+.app-container {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+header h1 {
+  font-size: 2rem;
+  margin: 0.5rem 0;
+}
+
+header p.subtitle {
+  font-size: 1rem;
+  margin: 0.5rem 0 1.5rem;
+}
+
+/* ───────────── Knappestiler ───────────── */
+button, .view-all {
+  display: block;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  background-color: #d4af37;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+}
+
+button.menu-button {
+  background-color: #4a6fa5;
+}
+
+.child-buttons button {
+  background-color: #eee;
+  color: #000;
+}
+
+/* ───────────── Meny & overlay ───────────── */
+.menu-toggle {
+  font-size: 2rem;
+  padding: 0.5rem;
+  /* gjør touch-target større */
+}
+
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  left: -100%;
+  width: 80%;
+  max-width: 300px;
+  height: 100%;
+  background: #fff;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.3);
+  transition: left 0.3s ease;
+  padding: 1rem;
+  z-index: 1001;
+}
+
+.mobile-menu.open {
+  left: 0;
+}
+
+.overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  z-index: 1000;
+}
+
+.card {
+  background: #fff;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  width: 100%;
+  max-width: 400px;
+}
+
+/* ───────────── Footer ───────────── */
+.bottom-footer {
+  margin-top: auto;
+  text-align: center;
+  font-size: 0.875rem;
+  padding: 1rem 0;
+  background: #eee;
+}
+
+/* ───────────── Tablet+ ───────────── */
+@media (min-width: 600px) {
+  .app-container {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .child-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .child-buttons button {
+    flex: 1 1 calc(50% - 0.5rem);
+    margin-bottom: 0;
+  }
+  .view-all {
+    width: auto;
+    align-self: center;
+    margin-top: 1.5rem;
+  }
+}
