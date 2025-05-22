@@ -2,10 +2,16 @@
   "name": "Gullkorn",
   "short_name": "Gullkorn",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#fdfcfb",
   "theme_color": "#4a6fa5",
   "icons": [
+    {
+      "src": "icons/icon-144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
     {
       "src": "icons/icon-192.png",
       "sizes": "192x192",
