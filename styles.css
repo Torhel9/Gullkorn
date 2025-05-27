@@ -1,3 +1,8 @@
+/* Globale bokser størrelse-justeringsregelen for mer konsistent responsivitet */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
@@ -47,10 +52,15 @@ body {
   z-index: 1002;
 }
 
-.menu-button {
+.menu-button,
+.view-all,
+button,
+input[type="submit"],
+input[type="button"],
+.tilbake-knapp {
   display: block;
-  margin: 1rem 0;
-  padding: 1rem 1.5rem;
+  margin: 0.75rem auto;
+  padding: 1rem 2rem;
   border: none;
   border-radius: 16px;
   background-color: #4a6fa5;
@@ -59,7 +69,30 @@ body {
   color: white;
   cursor: pointer;
   width: 100%;
-  text-align: left;
+  max-width: 320px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: background 0.2s, transform 0.1s;
+  text-align: center;
+  text-decoration: none;
+}
+
+.menu-button:hover,
+button:hover,
+input[type="submit"]:hover,
+input[type="button"]:hover,
+.tilbake-knapp:hover,
+.view-all:hover {
+  background-color: #3a5d8c;
+  transform: scale(1.02);
+}
+
+.menu-button:active,
+button:active,
+input[type="submit"]:active,
+input[type="button"]:active,
+.tilbake-knapp:active,
+.view-all:active {
+  transform: scale(0.98);
 }
 
 h1, h2 {
@@ -117,46 +150,6 @@ header p.subtitle {
   color: #777;
 }
 
-.tilbake-knapp,
-button,
-input[type="submit"],
-input[type="button"],
-.view-all {
-  display: block;
-  margin: 0.75rem auto;
-  padding: 1rem 2rem;
-  border: none;
-  border-radius: 16px;
-  background-color: #4a6fa5;
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: white;
-  cursor: pointer;
-  width: 100%;
-  max-width: 320px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: background 0.2s, transform 0.1s;
-  text-align: center;
-  text-decoration: none;
-}
-
-button:hover,
-input[type="submit"]:hover,
-input[type="button"]:hover,
-.tilbake-knapp:hover,
-.view-all:hover {
-  background-color: #3a5d8c;
-  transform: scale(1.02);
-}
-
-button:active,
-input[type="submit"]:active,
-input[type="button"]:active,
-.tilbake-knapp:active,
-.view-all:active {
-  transform: scale(0.98);
-}
-
 .filter-popup {
   position: fixed;
   top: 0;
@@ -211,20 +204,6 @@ input[type="button"]:active,
   transform: scale(0.98);
 }
 
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(0, 0, 0, 0.4);
-  z-index: 1000;
-  padding: 1rem;
-}
-
 .card {
   background: #ffffff;
   padding: 2rem;
@@ -238,3 +217,65 @@ input[type="button"]:active,
 }
 
 .card label {
+  font-weight: 600;
+  color: #333;
+}
+
+.card input,
+.card select,
+.card textarea {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+}
+
+.card-buttons {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: space-between;
+}
+
+.card-buttons button {
+  flex: 1;
+}
+
+/* Responsive tilpasninger for mobil */
+@media (max-width: 480px) {
+  .app-container {
+    padding: 0.5rem;
+  }
+
+  .menu-toggle {
+    top: 0.75rem;
+    left: 0.75rem;
+  }
+
+  .mobile-menu h2 {
+    margin-top: 2.5rem;
+    font-size: 1.15rem;
+  }
+
+  /* Generell knapp-justering */
+  .menu-button,
+  button,
+  input[type="submit"],
+  input[type="button"],
+  .tilbake-knapp,
+  .view-all,
+  #filterKnapper .filter-knapper button {
+    width: 100%;
+    max-width: 100%;
+    padding: 0.5rem 0.75rem;
+    font-size: 1rem;
+  }
+
+  /* Modal og filter-popup */
+  .filter-popup #filterKnapper,
+  .modal {
+    width: 90%;
+    max-width: 360px;
+    padding: 1rem;
+  }
+}
