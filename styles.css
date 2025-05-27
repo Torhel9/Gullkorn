@@ -261,3 +261,24 @@ input[type="button"]:active,
 .card-buttons button {
   flex: 1;
 }
+
+/* Responsive adjustments for buttons and modal */
+@media (max-width: 480px) {
+  .tilbake-knapp,
+  button,
+  input[type="submit"],
+  input[type="button"],
+  .view-all,
+  .filter-knapper button,
+  .card-buttons button {
+    width: 100%;
+    padding: 1.25rem 2rem;
+    font-size: 1.2rem;
+  }
+  .modal,
+  #filterKnapper {
+    width: 90vw;
+    max-width: none;
+    padding: 1rem;
+  }
+}
