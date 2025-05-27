@@ -139,6 +139,31 @@ header p.subtitle {
   font-style: italic;
 }
 
+.view-all {
+  display: block;
+  margin: 1.5rem auto 0;   /* tilsvarer margin-top:1.5rem + auto-sentering */
+  background-color: #d4af37;
+  color: white;
+  font-weight: bold;
+  padding: 1rem 1.5rem;
+  border-radius: 16px;
+  font-size: 1.1rem;
+  width: 100%;
+  max-width: 320px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  text-align: center;
+  text-decoration: none;
+}
+
+@media (max-width: 480px) {
+  .view-all {
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    max-width: 100%;
+  }
+}
+
+
 .quote-card small {
   color: #777;
 }
